@@ -21,4 +21,5 @@ public:
 
 	void loadFromFile(const std::string &filename);
 	void saveToFile(const std::string &filename) const;
+	std::string getGraphAsStr() const;
 };

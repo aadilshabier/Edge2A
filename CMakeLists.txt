@@ -2,16 +2,32 @@ cmake_minimum_required(VERSION 3.22)
 include(FetchContent)
 
 project(edge2a LANGUAGES CXX)
+set(MAIN_LIB edge2a_core)
 
+# Fetch JSON library
 FetchContent_Declare(json
   DOWNLOAD_EXTRACT_TIMESTAMP OFF
   URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz)
 FetchContent_MakeAvailable(json)
 
+# Fetch GoogleTest
+FetchContent_Declare(
+  googletest
+  GIT_REPOSITORY https://github.com/google/googletest.git
+  GIT_TAG release-1.12.1
+)
+FetchContent_MakeAvailable(googletest)
 
-add_executable(${PROJECT_NAME})
+# Library for core functionality
+add_library(${MAIN_LIB})
 add_subdirectory(src)
+set_property(TARGET ${MAIN_LIB} PROPERTY CXX_STANDARD 20)
+target_link_libraries(${MAIN_LIB} PRIVATE nlohmann_json::nlohmann_json)
 
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
+# Main executable
+add_executable(${PROJECT_NAME} src/main.cpp)
+target_link_libraries(${PROJECT_NAME} PRIVATE ${MAIN_LIB})
 
-target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)
+# Enable testing and add test directory
+enable_testing()
+add_subdirectory(test)

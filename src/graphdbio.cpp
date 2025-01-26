@@ -22,6 +22,14 @@ void GraphDB::loadFromFile(const std::string &filename)
 
 void GraphDB::saveToFile(const std::string &filename) const
 {
+	std::string g = getGraphAsStr();
+
+	std::ofstream file(filename);
+	file << g;
+}
+
+std::string GraphDB::getGraphAsStr() const
+{
 	json j;
 
 	auto &serNodes = j["nodes"] = json::array();
@@ -42,6 +50,5 @@ void GraphDB::saveToFile(const std::string &filename) const
 		serEdges.push_back(edgeJson);
 	}
 
-	std::ofstream file(filename);
-	file << j;
+	return j.dump();
 }
