@@ -10,13 +10,12 @@ void GraphDB::loadFromFile(const std::string &filename)
 	auto j = json::parse(file);
 
 	for (const auto &node : j["nodes"]) {
-		newNode(node["labels"],
-				node["properties"]);
+		createNode(node["labels"], node["properties"]);
 	}
 
 	for (const auto &edge : j["edges"]) {
-		auto edgeId = newEdge(edge["type"], edge["properties"], edge["from"], edge["to"]);
-	    nodes[edge["from"]].edges.push_back(edgeId);
+		auto edgeId = createEdge(edge["type"], edge["properties"], edge["from"], edge["to"]);
+	    graph.nodes[edge["from"]].edges.push_back(edgeId);
 	}
 }
 
@@ -25,7 +24,7 @@ void GraphDB::saveToFile(const std::string &filename) const
 	json j;
 
 	auto &serNodes = j["nodes"] = json::array();
-	for (const auto &node : nodes) {
+	for (const auto &node : graph.nodes) {
 		json nodeJson;
 		nodeJson["labels"] = node.labels;
 		nodeJson["properties"] = node.properties;
@@ -33,7 +32,7 @@ void GraphDB::saveToFile(const std::string &filename) const
 	}
 
 	auto &serEdges = j["edges"] = json::array();
-	for (const auto &edge : edges) {
+	for (const auto &edge : graph.edges) {
 		json edgeJson;
 		edgeJson["type"] = edge.type;
 		edgeJson["properties"] = edge.properties;
@@ -43,5 +42,9 @@ void GraphDB::saveToFile(const std::string &filename) const
 	}
 
 	std::ofstream file(filename);
-	file << j;
+
+	auto &&contents = j.dump(2);
+	file << contents;
+
+	// file << j;
 }
