@@ -10,12 +10,13 @@ TEST(ExpectedGraphStates, AddingNodesAndEdges) {
 	NodePK node2 = graph.createNode({"Person"}, {{"name", "Calvin"}});
 	EdgePK edge1 = graph.createEdge("friends", node1, node2);
 
-	std::string g = graph.getGraphAsStringStream().str();
-    auto j = json::parse(g);
+    std::stringstream ss;
+	graph.getGraphAsStream(ss);
+    auto j = json::parse(ss.str());
     
-    std::string expected_g = "{\"edges\":[{\"from\":0,\"properties\":{},\"to\":1,\"type\":\"friends\"}],\"nodes\":[{\"labels\":[\"Person\"],\"properties\":{\"name\":\"Aadil\"}},{\"labels\":[\"Person\"],\"properties\":{\"name\":\"Calvin\"}}]}";
-    auto expected_j = json::parse(expected_g);
-    EXPECT_EQ(expected_j, j);
+    std::string expectedGraph = "{\"edges\":[{\"from\":0,\"properties\":{},\"to\":1,\"type\":\"friends\"}],\"nodes\":[{\"labels\":[\"Person\"],\"properties\":{\"name\":\"Aadil\"}},{\"labels\":[\"Person\"],\"properties\":{\"name\":\"Calvin\"}}]}";
+    auto expectedJson = json::parse(expectedGraph);
+    EXPECT_EQ(expectedJson, j);
 }
 
 int main(int argc, char **argv) {

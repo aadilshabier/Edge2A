@@ -30,6 +30,6 @@ target_link_libraries(${MAIN_LIB} PRIVATE nlohmann_json::nlohmann_json)
 add_executable(${PROJECT_NAME} src/main.cpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${MAIN_LIB})
 
-# Enable testing and add test directory
+# Enable testing and add tests directory
 enable_testing()
-add_subdirectory(test)
+add_subdirectory(tests)
