@@ -24,7 +24,6 @@ FetchContent_MakeAvailable(googletest)
 # Library for core functionality
 add_library(${MAIN_LIB})
 add_subdirectory(src)
-set_property(TARGET ${MAIN_LIB} PROPERTY CXX_STANDARD 20)
 target_link_libraries(${MAIN_LIB} PRIVATE nlohmann_json::nlohmann_json)
 
 # Main executable
