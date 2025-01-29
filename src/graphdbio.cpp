@@ -10,13 +10,12 @@ void GraphDB::loadFromFile(const std::string &filename)
 	auto j = json::parse(file);
 
 	for (const auto &node : j["nodes"]) {
-		newNode(node["labels"],
-				node["properties"]);
+		createNode(node["labels"], node["properties"]);
 	}
 
 	for (const auto &edge : j["edges"]) {
-		auto edgeId = newEdge(edge["type"], edge["properties"], edge["from"], edge["to"]);
-	    nodes[edge["from"]].edges.push_back(edgeId);
+		auto edgeId = createEdge(edge["type"], edge["properties"], edge["from"], edge["to"]);
+	    graph.nodes[edge["from"]].edges.push_back(edgeId);
 	}
 }
 
@@ -33,7 +32,7 @@ std::string GraphDB::getGraphAsStr() const
 	json j;
 
 	auto &serNodes = j["nodes"] = json::array();
-	for (const auto &node : nodes) {
+	for (const auto &node : graph.nodes) {
 		json nodeJson;
 		nodeJson["labels"] = node.labels;
 		nodeJson["properties"] = node.properties;
@@ -41,7 +40,7 @@ std::string GraphDB::getGraphAsStr() const
 	}
 
 	auto &serEdges = j["edges"] = json::array();
-	for (const auto &edge : edges) {
+	for (const auto &edge : graph.edges) {
 		json edgeJson;
 		edgeJson["type"] = edge.type;
 		edgeJson["properties"] = edge.properties;
@@ -50,5 +49,5 @@ std::string GraphDB::getGraphAsStr() const
 		serEdges.push_back(edgeJson);
 	}
 
-	return j.dump();
+	return j.dump(2);
 }

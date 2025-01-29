@@ -1,5 +1,6 @@
 target_sources(${MAIN_LIB} PRIVATE
   graphdbio.cpp
+  graph.cpp
   graphdb.cpp
 )
 
