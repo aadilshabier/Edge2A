@@ -10,7 +10,7 @@ TEST(ExpectedGraphStates, AddingNodesAndEdges) {
 	NodePK node2 = graph.createNode({"Person"}, {{"name", "Calvin"}});
 	EdgePK edge1 = graph.createEdge("friends", node1, node2);
 
-	std::string g = graph.getGraphAsStr();
+	std::string g = graph.getGraphAsStringStream().str();
     auto j = json::parse(g);
     
     std::string expected_g = "{\"edges\":[{\"from\":0,\"properties\":{},\"to\":1,\"type\":\"friends\"}],\"nodes\":[{\"labels\":[\"Person\"],\"properties\":{\"name\":\"Aadil\"}},{\"labels\":[\"Person\"],\"properties\":{\"name\":\"Calvin\"}}]}";

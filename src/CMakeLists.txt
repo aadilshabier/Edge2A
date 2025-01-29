@@ -4,6 +4,6 @@ target_sources(${MAIN_LIB} PRIVATE
   graphdb.cpp
 )
 
-target_include_directories(${MAIN_LIB} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(${MAIN_LIB} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 # add_subdirectory(utils)

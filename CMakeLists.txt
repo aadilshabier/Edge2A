@@ -25,7 +25,7 @@ FetchContent_MakeAvailable(googletest)
 add_library(${MAIN_LIB})
 add_subdirectory(src)
 set_property(TARGET ${MAIN_LIB} PROPERTY CXX_STANDARD 20)
-target_link_libraries(${MAIN_LIB} PUBLIC nlohmann_json::nlohmann_json)
+target_link_libraries(${MAIN_LIB} PRIVATE nlohmann_json::nlohmann_json)
 
 # Main executable
 add_executable(${PROJECT_NAME} src/main.cpp)

@@ -1,6 +1,7 @@
 #include "graphdb.hpp"
 
 #include <fstream>
+#include <sstream>
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
@@ -21,13 +22,13 @@ void GraphDB::loadFromFile(const std::string &filename)
 
 void GraphDB::saveToFile(const std::string &filename) const
 {
-	std::string g = getGraphAsStr();
+	std::stringstream g = getGraphAsStringStream();
 
 	std::ofstream file(filename);
-	file << g;
+	file << g.str();
 }
 
-std::string GraphDB::getGraphAsStr() const
+std::stringstream GraphDB::getGraphAsStringStream() const
 {
 	json j;
 
@@ -49,5 +50,7 @@ std::string GraphDB::getGraphAsStr() const
 		serEdges.push_back(edgeJson);
 	}
 
-	return j.dump(2);
+	std::stringstream ss;
+	ss << j.dump(2);
+	return ss;
 }
