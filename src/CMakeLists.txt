@@ -1,10 +1,9 @@
-target_sources(${PROJECT_NAME} PRIVATE
+target_sources(${MAIN_LIB} PRIVATE
   graphdbio.cpp
   graph.cpp
   graphdb.cpp
-  main.cpp
 )
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(${MAIN_LIB} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 # add_subdirectory(utils)

@@ -22,6 +22,7 @@ EdgePK Graph::createEdge(std::string type, NodePK from, NodePK to,
 	}
 
 	Edge edge;
+	edge.type = type;
 	edge.from = from;
 	edge.to = to;
 	edge.properties = properties;
