@@ -16,4 +16,12 @@ public:
 
 	EdgePK createEdge(std::string type, NodePK from, NodePK to,
 					  std::unordered_map<std::string,std::string> properties={});
+
+    size_t numNodes() const {
+		return nodes.size();
+	}
+
+	size_t numEdges() const {
+		return edges.size();
+	}
 };
