@@ -6,10 +6,23 @@ Short for Edge2ANode. The best Graph Database Managment System of our times[^1]
 
 # Instructions
 
+## Build
 ``` shell
 mkdir build
 cd build
 cmake ..
 make
+```
+
+## Test
+
+``` shell
+ctest
+```
+
+## Run
+
+``` shell
 ./edge2a
 ```
+
