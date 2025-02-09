@@ -3,15 +3,21 @@
 #include <cassert>
 
 NodePK GraphDB::createNode(std::unordered_set<std::string> labels,
-						std::unordered_map<std::string,std::string> properties)
+						std::unordered_map<std::string,std::string> properties, std::string alias)
 {
-	return graph.createNode(labels, properties);
+	return graph.createNode(labels, properties, alias);
 }
 
 EdgePK GraphDB::createEdge(std::string type, NodePK from, NodePK to,
 						std::unordered_map<std::string,std::string> properties)
 {
 	return graph.createEdge(type, from, to, properties);
+}
+
+EdgePK GraphDB::createEdgeByAlias(std::string type, std::string fromAlias, std::string toAlias,
+						std::unordered_map<std::string,std::string> properties)
+{
+	return graph.createEdgeByAlias(type, fromAlias, toAlias, properties);
 }
 
 static bool matchNode(const MatchNode &nodeA, const Node &nodeB)
@@ -50,4 +56,9 @@ MatchResults GraphDB::match(MatchPattern pattern, WhereExp where, MatchResultFmt
 	}
 
 	return results;
+}
+
+void GraphDB::loadCypherScript(const std::string &filename) {
+	static Parser parser;
+	parser.parseCypherScript(filename, *this);
 }

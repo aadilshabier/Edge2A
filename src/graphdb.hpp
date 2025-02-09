@@ -3,20 +3,27 @@
 #include "common.hpp"
 #include "graph.hpp"
 #include "match.hpp"
+#include "parser/parser.hpp"
 
 #include <vector>
 
+
 class GraphDB
 {
+public:
 	Graph graph;
+
 public:
 
 	explicit GraphDB() {}
 
 	NodePK createNode(std::unordered_set<std::string> labels={},
+		std::unordered_map<std::string,std::string> properties={}, std::string alias="");
+		
+	EdgePK createEdge(std::string type, NodePK from, NodePK to,
 					  std::unordered_map<std::string,std::string> properties={});
 
-	EdgePK createEdge(std::string type, NodePK from, NodePK to,
+	EdgePK createEdgeByAlias(std::string type, std::string fromAlias, std::string toAlias,
 					  std::unordered_map<std::string,std::string> properties={});
 
 	MatchResults match(MatchPattern pattern, WhereExp where, MatchResultFmt resultFmt);
@@ -24,4 +31,6 @@ public:
 	void loadFromFile(const std::string &filename);
 	void saveToFile(const std::string &filename) const;
 	void getGraphAsStream(std::ostream &os) const;
+
+	void loadCypherScript(const std::string &filename);
 };
