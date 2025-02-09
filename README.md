@@ -6,6 +6,14 @@ Short for Edge2ANode. The best Graph Database Managment System of our times[^1]
 
 # Instructions
 
+## Requirements
+
+Make sure you have the following dependencies installed before building:
+- **CMake** (version 3.22 or higher)
+- **GCC** / **Clang** (with C++20 support)
+- **FLEX** (Fast Lexical Analyzer)
+- **BISON** (GNU Parser Generator)
+
 ## Build
 ``` shell
 mkdir build
