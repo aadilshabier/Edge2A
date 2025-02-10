@@ -9,7 +9,7 @@ class Edge
 {
 public:
 	std::string type;
-	std::unordered_map<std::string,std::string> properties;
+	std::unordered_map<std::string, Data> properties;
 
 	NodePK from;
 	NodePK to;

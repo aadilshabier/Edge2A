@@ -14,10 +14,10 @@ public:
 	explicit GraphDB() {}
 
 	NodePK createNode(std::unordered_set<std::string> labels={},
-					  std::unordered_map<std::string,std::string> properties={});
+					  std::unordered_map<std::string, Data> properties={});
 
 	EdgePK createEdge(std::string type, NodePK from, NodePK to,
-					  std::unordered_map<std::string,std::string> properties={});
+					  std::unordered_map<std::string, Data> properties={});
 
 	MatchResults match(MatchPattern pattern, WhereExp where, MatchResultFmt resultFmt);
 
