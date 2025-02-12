@@ -28,12 +28,8 @@ std::unordered_map<std::string, std::string> current_properties;
 
 // Entry point
 statements:
-    create_statements
-    ;
-
-create_statements:
     create_statement
-    | create_statements create_statement
+    | statements create_statement
     ;
 
 create_statement:

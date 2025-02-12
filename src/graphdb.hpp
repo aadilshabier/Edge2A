@@ -12,6 +12,7 @@ class GraphDB
 {
 public:
 	Graph graph;
+	std::unordered_map<std::string, NodePK> aliasToNodePKMap;
 
 public:
 
@@ -19,6 +20,8 @@ public:
 
 	NodePK createNode(std::unordered_set<std::string> labels={},
 		std::unordered_map<std::string,std::string> properties={}, std::string alias="");
+	
+	NodePK getNodePKByAlias(std::string alias);
 		
 	EdgePK createEdge(std::string type, NodePK from, NodePK to,
 					  std::unordered_map<std::string,std::string> properties={});

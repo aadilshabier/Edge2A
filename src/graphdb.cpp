@@ -1,11 +1,28 @@
 #include "graphdb.hpp"
 
 #include <cassert>
+#include <iostream>
 
 NodePK GraphDB::createNode(std::unordered_set<std::string> labels,
 						std::unordered_map<std::string,std::string> properties, std::string alias)
 {
-	return graph.createNode(labels, properties, alias);
+	NodePK nodePK = graph.createNode(labels, properties);
+	if (alias != "") {
+		aliasToNodePKMap[alias] = nodePK; // Add alias to map if provided
+	}
+	return nodePK;
+}
+
+NodePK GraphDB::getNodePKByAlias(std::string alias)
+{
+	// Search within map
+	if (aliasToNodePKMap.find(alias) != aliasToNodePKMap.end()) {
+		return aliasToNodePKMap[alias];
+	}
+
+	// Node not found
+	std::cerr << "ERROR: Node not found" << std::endl;
+	return -1;
 }
 
 EdgePK GraphDB::createEdge(std::string type, NodePK from, NodePK to,
@@ -17,7 +34,12 @@ EdgePK GraphDB::createEdge(std::string type, NodePK from, NodePK to,
 EdgePK GraphDB::createEdgeByAlias(std::string type, std::string fromAlias, std::string toAlias,
 						std::unordered_map<std::string,std::string> properties)
 {
-	return graph.createEdgeByAlias(type, fromAlias, toAlias, properties);
+	NodePK from = getNodePKByAlias(fromAlias);
+	NodePK to = getNodePKByAlias(toAlias);
+	if (from == -1 or to == -1) {
+		return -1; // Node not found
+	}
+	return graph.createEdge(type, from, to, properties);
 }
 
 static bool matchNode(const MatchNode &nodeA, const Node &nodeB)
@@ -59,6 +81,6 @@ MatchResults GraphDB::match(MatchPattern pattern, WhereExp where, MatchResultFmt
 }
 
 void GraphDB::loadCypherScript(const std::string &filename) {
-	static Parser parser;
+	Parser parser;
 	parser.parseCypherScript(filename, *this);
 }
