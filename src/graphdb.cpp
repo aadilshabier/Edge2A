@@ -4,7 +4,7 @@
 #include <iostream>
 
 NodePK GraphDB::createNode(std::unordered_set<std::string> labels,
-						std::unordered_map<std::string, Data> properties, std::string alias)
+				std::unordered_map<std::string, Data> properties, std::string alias)
 {
 	NodePK nodePK = graph.createNode(labels, properties);
 	if (alias != "") {
