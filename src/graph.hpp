@@ -12,10 +12,10 @@ public:
 	std::vector<Edge> edges;
 
 	NodePK createNode(std::unordered_set<std::string> labels={},
-					  std::unordered_map<std::string,std::string> properties={});
+					  std::unordered_map<std::string, Data> properties={});
 
 	EdgePK createEdge(std::string type, NodePK from, NodePK to,
-					  std::unordered_map<std::string,std::string> properties={});
+					std::unordered_map<std::string, Data> properties={});
 	
 	EdgePK getEdgeByNodesAndType(NodePK from, NodePK to, std::string type);
 

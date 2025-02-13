@@ -12,7 +12,7 @@ void yyerror(const char *s);
 GraphDB *graphDB;
 
 std::unordered_set<std::string> current_labels;
-std::unordered_map<std::string, std::string> current_properties;
+std::unordered_map<std::string, Data> current_properties;
 %}
 
 %union {
@@ -22,7 +22,7 @@ std::unordered_map<std::string, std::string> current_properties;
 // Token definitions
 %token CREATE LPAREN RPAREN LBRACE RBRACE LBRACKET RBRACKET COLON SEMICOLON COMMA DASH ARROW
 %token <str> DIGITS ID FULLSTRING
-%type <str> STRING property_value item_list string_list number_list
+%type <str> STRING property_value property_item item_list string_list number_list
 
 %%
 
@@ -72,15 +72,15 @@ properties:
     ;
 
 property_list:
+    property_item
+    | property_list COMMA property_item
+    ;
+
+property_item:
     ID COLON property_value
     {
         current_properties[$1] = $3;
-    }
-    | property_list COMMA ID COLON property_value
-    {
-        current_properties[$3] = $5;
-    }
-    ;
+    };
 
 property_value:
     STRING { $$ = $1; }
@@ -105,7 +105,7 @@ number_list:
 
 STRING:
     FULLSTRING { 
-        /*Trimming first and last characters*/
+        /* Trimming first and last characters */
         std::string str($1); 
         $$ = strdup((str.size() > 1) ? str.substr(1, str.size() - 2).c_str() : ""); 
     }

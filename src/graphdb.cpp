@@ -4,7 +4,7 @@
 #include <iostream>
 
 NodePK GraphDB::createNode(std::unordered_set<std::string> labels,
-						std::unordered_map<std::string,std::string> properties, std::string alias)
+						std::unordered_map<std::string, Data> properties, std::string alias)
 {
 	NodePK nodePK = graph.createNode(labels, properties);
 	if (alias != "") {
@@ -26,13 +26,13 @@ NodePK GraphDB::getNodePKByAlias(std::string alias)
 }
 
 EdgePK GraphDB::createEdge(std::string type, NodePK from, NodePK to,
-						std::unordered_map<std::string,std::string> properties)
+						std::unordered_map<std::string, Data> properties)
 {
 	return graph.createEdge(type, from, to, properties);
 }
 
 EdgePK GraphDB::createEdgeByAlias(std::string type, std::string fromAlias, std::string toAlias,
-						std::unordered_map<std::string,std::string> properties)
+						std::unordered_map<std::string, Data> properties)
 {
 	NodePK from = getNodePKByAlias(fromAlias);
 	NodePK to = getNodePKByAlias(toAlias);
@@ -42,6 +42,7 @@ EdgePK GraphDB::createEdgeByAlias(std::string type, std::string fromAlias, std::
 	return graph.createEdge(type, from, to, properties);
 }
 
+// check whether nodeB <= nodeA (subset of)
 static bool matchNode(const MatchNode &nodeA, const Node &nodeB)
 {
 	assert(nodeA.edges.size() == 0);

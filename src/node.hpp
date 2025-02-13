@@ -11,6 +11,6 @@ class Node
 {
 public:
 	std::unordered_set<std::string> labels;
-	std::unordered_map<std::string,std::string> properties;
+	std::unordered_map<std::string, Data> properties;
 	std::vector<EdgePK> edges;
 };

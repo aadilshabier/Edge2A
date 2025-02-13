@@ -18,7 +18,7 @@ TEST_F(GraphDBParsingTest, ParseCypherNode) {
 	ASSERT_NE(personPK, -1); // Check if the node exists
 	int expectedYear = 1956;
 	ASSERT_NE(db.graph.nodes[personPK].properties.find("born"), db.graph.nodes[personPK].properties.end()); // Check if the property exists
-	int outputYear = std::stoi(db.graph.nodes[personPK].properties["born"]);
+	int outputYear = std::stoi(std::get<DataStringType>(db.graph.nodes[personPK].properties["born"].variant));
 	EXPECT_EQ(expectedYear, outputYear);
 }
 
@@ -35,7 +35,7 @@ TEST_F(GraphDBParsingTest, ParseCypherEdge) {
 	
 	std::string expectedRole = "Paul Edgecomb";
 	ASSERT_NE(db.graph.edges[edgePK].properties.find("roles"), db.graph.edges[edgePK].properties.end()); // Check if the property exists
-	std::string outputRole = db.graph.edges[edgePK].properties["roles"];
+	std::string outputRole = std::get<DataStringType>(db.graph.edges[edgePK].properties["roles"].variant);
 	EXPECT_EQ(expectedRole, outputRole);
 }
 } // namespace
