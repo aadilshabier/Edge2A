@@ -3,17 +3,18 @@
 #include <cassert>
 
 NodePK GraphDB::createNode(std::unordered_set<std::string> labels,
-						std::unordered_map<std::string,std::string> properties)
+						   std::unordered_map<std::string, Data> properties)
 {
 	return graph.createNode(labels, properties);
 }
 
 EdgePK GraphDB::createEdge(std::string type, NodePK from, NodePK to,
-						std::unordered_map<std::string,std::string> properties)
+						std::unordered_map<std::string, Data> properties)
 {
 	return graph.createEdge(type, from, to, properties);
 }
 
+// check whether nodeB <= nodeA (subset of)
 static bool matchNode(const MatchNode &nodeA, const Node &nodeB)
 {
 	assert(nodeA.edges.size() == 0);

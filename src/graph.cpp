@@ -3,7 +3,7 @@
 #include <iostream>
 
 NodePK Graph::createNode(std::unordered_set<std::string> labels,
-						 std::unordered_map<std::string,std::string> properties)
+						 std::unordered_map<std::string, Data> properties)
 {
 	Node node;
 	node.labels = labels;
@@ -14,7 +14,7 @@ NodePK Graph::createNode(std::unordered_set<std::string> labels,
 }
 
 EdgePK Graph::createEdge(std::string type, NodePK from, NodePK to,
-						 std::unordered_map<std::string,std::string> properties)
+						 std::unordered_map<std::string, Data> properties)
 {
 	if (from >= nodes.size() or to >= nodes.size()) {
 		std::cerr << "ERROR: " << from << " or " << to << " is greater than " << nodes.size()-1 << std::endl;
