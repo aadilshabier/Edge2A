@@ -16,7 +16,7 @@ FULLSTRING      \'[^\']*\'|\"[^\"]*\"
 
 [ \t\r\n]+    { /* Ignore Whitespace*/ }
 
-CREATE        { return CREATE; }
+"CREATE"        { return CREATE; }
 
 {ID}          { yylval.str = strdup(yytext); return ID; }
 {DIGITS}      { yylval.str = strdup(yytext); return DIGITS; }
