@@ -28,8 +28,8 @@ std::unordered_map<std::string, Data> current_properties;
 
 // Entry point
 statements:
-    create_statement
-    | statements create_statement
+    statements create_statement
+    | %empty
     ;
 
 create_statement:
@@ -68,7 +68,7 @@ edge_statement:
 
 properties:
     LBRACE property_list RBRACE
-    | /* empty */ { current_properties.clear(); }
+    | %empty { current_properties.clear(); }
     ;
 
 property_list:

@@ -18,7 +18,6 @@ public:
 					std::unordered_map<std::string, Data> properties={});
 	
 	EdgePK getEdgeByNodesAndType(NodePK from, NodePK to, std::string type);
-					  std::unordered_map<std::string, Data> properties={});
 
     size_t numNodes() const {
 		return nodes.size();
