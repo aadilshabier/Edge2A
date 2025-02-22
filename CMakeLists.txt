@@ -3,6 +3,7 @@ include(FetchContent)
 
 project(edge2a LANGUAGES CXX)
 set(MAIN_LIB edge2a_core)
+set(PARSER_LIB edge2a_parser)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_REQUIRED ON)
@@ -27,9 +28,14 @@ add_subdirectory(src)
 target_link_libraries(${MAIN_LIB} PRIVATE nlohmann_json::nlohmann_json)
 # TODO: set public include directory for ${MAIN_LIB}
 
+# Library for parser
+add_subdirectory(src/parser)
+
 # Main executable
 add_executable(${PROJECT_NAME} src/main.cpp)
-target_link_libraries(${PROJECT_NAME} PRIVATE ${MAIN_LIB})
+
+target_link_libraries(${MAIN_LIB} PRIVATE ${PARSER_LIB})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${MAIN_LIB} ${PARSER_LIB})
 
 # Enable testing and add tests directory
 enable_testing()

@@ -8,8 +8,8 @@ NodePK Graph::createNode(std::unordered_set<std::string> labels,
 	Node node;
 	node.labels = labels;
 	node.properties = properties;
-
 	nodes.push_back(node);
+
 	return nodes.size()-1;
 }
 
@@ -18,7 +18,7 @@ EdgePK Graph::createEdge(std::string type, NodePK from, NodePK to,
 {
 	if (from >= nodes.size() or to >= nodes.size()) {
 		std::cerr << "ERROR: " << from << " or " << to << " is greater than " << nodes.size()-1 << std::endl;
-		return 9999;
+		return -1;
 	}
 
 	Edge edge;
@@ -32,4 +32,18 @@ EdgePK Graph::createEdge(std::string type, NodePK from, NodePK to,
 	nodes[from].edges.push_back(edgeId);
 
 	return edgeId;
+}
+
+EdgePK Graph::getEdgeByNodesAndType(NodePK from, NodePK to, std::string type)
+{
+	std::vector<EdgePK> edgePKs;
+	for (auto edgePK : nodes[from].edges) {
+		if (edges[edgePK].to == to and edges[edgePK].type == type) {
+			return edgePK;
+		}
+	}
+
+	// Edge not found
+	std::cerr << "ERROR: Edge not found" << std::endl;
+	return -1;
 }

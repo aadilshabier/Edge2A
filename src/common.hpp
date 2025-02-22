@@ -26,3 +26,20 @@ public:
 		return variant == other.variant;
 	}
 };
+
+// Operator "<<" overloading for Data
+// std::ostream& operator<<(std::ostream& os, const Data& data) {
+//     std::visit([&os](const auto& value) {
+//         using Type = std::decay_t<decltype(value)>;
+//         if constexpr (std::is_same_v<Type, DataArrayType>) {
+//             os << "[ ";
+//             for (const auto& elem : value) {
+//                 os << elem << " ";  // Recursively calls operator<<
+//             }
+//             os << "]";
+//         } else {
+//             os << value;
+//         }
+//     }, data.variant);
+//     return os;
+// }
