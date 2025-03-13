@@ -1,16 +1,20 @@
+%option yylineno
+
 %{
 #include "parser.hpp"
 #include "parser.tab.hpp"
+#include <cstdlib>
 #include <iostream>
 #include <string>
 
 void yyerror(const char *s);
 %}
 
-/*Define Tokens*/
-DIGITS       [0-9]*
-ID          [a-zA-Z_][a-zA-Z0-9_]*
-FULLSTRING      \'[^\']*\'|\"[^\"]*\"
+/* Define Tokens*/
+INTEGER        -?(0|[1-9][0-9]*)
+FLOAT          -?(0|[1-9][0-9]*)(\.[0-9]+)?(e-?(0|[1-9][0-9]*))?
+ID             [a-zA-Z_][a-zA-Z0-9_]*
+FULLSTRING     \'[^\']*\'|\"[^\"]*\"
 
 %%
 
@@ -19,7 +23,8 @@ FULLSTRING      \'[^\']*\'|\"[^\"]*\"
 "CREATE"        { return CREATE; }
 
 {ID}          { yylval.str = strdup(yytext); return ID; }
-{DIGITS}      { yylval.str = strdup(yytext); return DIGITS; }
+{INTEGER}      { yylval.num = atoll(yytext); return INTEGER; }
+{FLOAT}      { yylval.flt = strtod(yytext, NULL); return FLOAT; }
 
 "("           { return LPAREN; }
 ")"           { return RPAREN; }

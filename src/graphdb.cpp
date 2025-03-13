@@ -13,11 +13,11 @@ NodePK GraphDB::createNode(std::unordered_set<std::string> labels,
 	return nodePK;
 }
 
-NodePK GraphDB::getNodePKByAlias(std::string alias)
+NodePK GraphDB::getNodePKByAlias(const std::string &alias) const
 {
 	// Search within map
-	if (aliasToNodePKMap.find(alias) != aliasToNodePKMap.end()) {
-		return aliasToNodePKMap[alias];
+	if (const auto it = aliasToNodePKMap.find(alias); it != aliasToNodePKMap.end()) {
+		return it->second;
 	}
 
 	// Node not found
@@ -31,8 +31,8 @@ EdgePK GraphDB::createEdge(std::string type, NodePK from, NodePK to,
 	return graph.createEdge(type, from, to, properties);
 }
 
-EdgePK GraphDB::createEdgeByAlias(std::string type, std::string fromAlias, std::string toAlias,
-						std::unordered_map<std::string, Data> properties)
+EdgePK GraphDB::createEdgeByAlias(const std::string &type, const std::string &fromAlias, const std::string &toAlias,
+								  std::unordered_map<std::string, Data> properties)
 {
 	NodePK from = getNodePKByAlias(fromAlias);
 	NodePK to = getNodePKByAlias(toAlias);
@@ -81,7 +81,7 @@ MatchResults GraphDB::match(MatchPattern pattern, WhereExp where, MatchResultFmt
 	return results;
 }
 
-void GraphDB::loadCypherScript(const std::string &filename) {
+void GraphDB::parseCypherScript(const std::string &filename) {
 	Parser parser;
 	parser.parseCypherScript(filename, *this);
 }

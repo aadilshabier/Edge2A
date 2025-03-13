@@ -15,17 +15,15 @@ using DataRealType = double;
 using DataArrayType = std::vector<Data>;
 
 using DataVariant = std::variant<DataStringType, DataIntType, DataRealType, DataArrayType>;
-
-class Data {
+class Data
+	: public DataVariant
+{
 public:
-	DataVariant variant;
-	template <typename ...Ts>
-    Data(Ts&&... val) : variant(std::forward<Ts>(val)...) {}
-
-	auto operator==(const auto &other) const {
-		return variant == other.variant;
-	}
+	using base = DataVariant;
+	using base::base;
+	using base::operator=;
 };
+
 
 // Operator "<<" overloading for Data
 // std::ostream& operator<<(std::ostream& os, const Data& data) {
