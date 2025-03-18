@@ -6,6 +6,7 @@
 
 using NodePK = unsigned int;
 using EdgePK = unsigned int;
+using AdjList = std::vector<std::vector<EdgePK>>;
 
 class Data;
 

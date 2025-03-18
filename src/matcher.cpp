@@ -20,27 +20,30 @@ VF2Matcher::VF2Matcher(const Graph& graph1, const MatchPattern& graph2) : g1(gra
         const Edge& edge = g2.edges[edgePK];
         g2InEdges[edge.to].push_back(edgePK);
     }
+
+    currentMapping = std::vector<NodePK>(g2.numNodes(), -1);
+    usedNodes = std::vector<bool>(g1.numNodes(), 0);
 }
 
-bool VF2Matcher::backtrack(size_t depth) {
-    if (mapping.size() == g2.numNodes()) {
-        return true;  // Complete matching found
+void VF2Matcher::backtrack(size_t depth) {
+    if (depth == g2.numNodes()) {
+        mappings.insert(currentMapping); // match found
+        return;
     }
 
     for (NodePK n2 = 0; n2 < g2.numNodes(); ++n2) {
-        if (mapping.find(n2) != mapping.end()) continue; // Already matched
+        if (currentMapping[n2] != -1) continue; // Already matched
 
         for (NodePK n1 = 0; n1 < g1.numNodes(); ++n1) {
-            if (usedNodes.find(n1) != usedNodes.end()) continue; // Already mapped
+            if (usedNodes[n1]) continue; // Already mapped
 
-            mapping[n2] = n1;
-            usedNodes.insert(n1);
-            if (isFeasible(n1, n2) && backtrack(depth + 1)) return true;
-            mapping.erase(n2);
-            usedNodes.erase(n1);
+            currentMapping[n2] = n1;
+            usedNodes[n1] = true;
+            if (isFeasible(n1, n2)) backtrack(depth + 1);
+            currentMapping[n2] = -1;
+            usedNodes[n1] = false;
         }
     }
-    return false;
 }
 
 bool VF2Matcher::isFeasible(NodePK n1, NodePK n2) {
@@ -96,13 +99,13 @@ bool VF2Matcher::matchEdges(const std::vector<EdgePK> &edges1, const std::vector
         const Edge& edge2 = g2.edges[e2];
 
         // Ignore edges where either of the nodes is not mapped
-        if (!mapping.count(edge2.from) || !mapping.count(edge2.to)) continue;
+        if ((currentMapping[edge2.from] == -1) || (currentMapping[edge2.to] == -1)) continue;
 
         bool found = false;
         for (EdgePK e1 : edges1) {
             const Edge& edge1 = g1.edges[e1];
 
-            if (edge2.type != edge1.type || mapping[edge2.from] != edge1.from || mapping[edge2.to] != edge1.to) {
+            if (edge2.type != edge1.type || currentMapping[edge2.from] != edge1.from || currentMapping[edge2.to] != edge1.to) {
                 continue;
             }
 
