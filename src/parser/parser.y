@@ -12,18 +12,25 @@ void yyerror(const char *s);
 GraphDB *graphDB;
 
 std::unordered_set<std::string> current_labels;
+Data current_value;
+DataArrayType current_array;
 std::unordered_map<std::string, Data> current_properties;
 %}
 
 %union {
     char* str;
+	DataIntType num;
+	DataRealType flt;
 }
 
 // Token definitions
 %token CREATE LPAREN RPAREN LBRACE RBRACE LBRACKET RBRACKET COLON SEMICOLON COMMA DASH ARROW
-%token <str> DIGITS ID FULLSTRING
-%type <str> STRING property_value property_item item_list string_list number_list
+%token <str> ID FULLSTRING
+%token <num> INTEGER
+%token <flt> FLOAT
 
+%nterm <str> STRING
+// %nterm <str> item_list string_list number_list
 %%
 
 // Entry point
@@ -68,7 +75,7 @@ edge_statement:
 
 properties:
     LBRACE property_list RBRACE
-    | %empty { current_properties.clear(); }
+    | %empty
     ;
 
 property_list:
@@ -79,29 +86,23 @@ property_list:
 property_item:
     ID COLON property_value
     {
-        current_properties[$1] = $3;
+        current_properties[$1] = current_value;
     };
 
 property_value:
-    STRING { $$ = $1; }
-    | DIGITS { $$ = $1; }
-    | LBRACKET item_list RBRACKET { $$ = $2; }
+    STRING { current_value = $1; }
+    | INTEGER { current_value = $1; }
+    | FLOAT { current_value = $1; }
+    | LBRACKET item_list RBRACKET {
+		  // NOTE: Doesn't support nested lists yet!
+		  current_value = current_array;
+		  current_array.clear();
+	  }
     ;
 
-item_list:
-    string_list { $$ = $1; }
-    | number_list { $$ = $1; }
-    ;
-
-string_list:
-    string_list COMMA STRING { $$ = $3; } // Return only final value for now
-    | STRING { $$ = $1; }
-    ;
-
-number_list:
-    number_list COMMA DIGITS { $$ = $3; } // Return only final value for now
-    | DIGITS { $$ = $1; }
-    ;
+item_list: item_list COMMA property_value { current_array.push_back(current_value); }
+         | property_value { current_array.push_back(current_value); }
+;
 
 STRING:
     FULLSTRING { 
@@ -112,7 +113,8 @@ STRING:
     ;
 
 %%
+extern int yylineno;
 
 void yyerror(const char *s) {
-    std::cerr << "Parse error: " << s << std::endl;
+    std::cerr << "Parser error: " << s << " at " << yylineno << std::endl;
 }

@@ -10,7 +10,7 @@ extern FILE* yyin;
 void Parser::parseCypherScript(const std::string &filename, GraphDB &db) {
     yyin = fopen(filename.c_str(), "r");
     if (!yyin) {
-        std::cerr << "Could not open file: " << filename << std::endl;
+        std::cerr << "ERROR: Could not open file: " << filename << std::endl;
         return;
     }
 

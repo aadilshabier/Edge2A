@@ -64,12 +64,14 @@ namespace nlohmann
 	};
 } // nlohmann
 
+// Holy hack!
 void to_json(json& j, const Data& data) {
-	j = data.variant;
+	auto v = static_cast<const DataVariant*>(&data); // upcast
+	j = *v;
 }
 
 void from_json(const json& j, Data& data) {
-	data.variant = j;
+	data = DataVariant(j);
 }
 
 void GraphDB::loadFromFile(const std::string &filename)
