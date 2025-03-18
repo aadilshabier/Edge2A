@@ -4,6 +4,7 @@
 #include "graph.hpp"
 #include "match.hpp"
 #include "parser/parser.hpp"
+#include "matcher.hpp"
 
 #include <vector>
 
