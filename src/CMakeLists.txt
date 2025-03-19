@@ -3,6 +3,7 @@ target_sources(${MAIN_LIB} PRIVATE
   graph.cpp
   graphUtils.cpp
   graphdb.cpp
+  matcher.cpp
 )
 
 target_include_directories(${MAIN_LIB} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
