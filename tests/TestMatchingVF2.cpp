@@ -65,6 +65,39 @@ TEST_F(GraphDBMatchingVF2Test, MatchNodeWithMultipleResults) {
 
 	EXPECT_EQ(mappedNames, names) << "Incorrect names of directors";
 }
+
+TEST_F(GraphDBMatchingVF2Test, MatchSeveralSpeedTestShort) {
+	MatchPattern pattern;
+	NodePK person1_2 = pattern.createNode({"Person"}, {});
+	NodePK person2_2 = pattern.createNode({"Person"}, {});
+	NodePK movie1_2 = pattern.createNode({"Movie"}, {});
+	NodePK movie2_2 = pattern.createNode({"Movie"}, {});
+
+	EdgePK e1_2 = pattern.createEdge("ACTED_IN", person1_2, movie1_2, {});
+	EdgePK e2_2 = pattern.createEdge("ACTED_IN", person2_2, movie1_2, {});
+	EdgePK e3_2 = pattern.createEdge("DIRECTED", person1_2, movie2_2, {});
+
+	VF2Matcher matcher = VF2Matcher(db.graph, pattern);
+	auto mappings = matcher.match();
+	ASSERT_EQ(mappings.size(), 64) << "Incorrect number of mappings found";
+}
+
+// TEST_F(GraphDBMatchingVF2Test, MatchSeveralSpeedTestLong) {
+// 	MatchPattern pattern;
+// 	NodePK person1_2 = pattern.createNode({"Person"}, {});
+// 	NodePK person2_2 = pattern.createNode({"Person"}, {});
+// 	NodePK movie1_2 = pattern.createNode({"Movie"}, {});
+// 	NodePK movie2_2 = pattern.createNode({"Movie"}, {});
+// 	NodePK movie3_2 = pattern.createNode({"Movie"}, {});
+// 	EdgePK e1_2 = pattern.createEdge("ACTED_IN", person1_2, movie1_2, {});
+// 	EdgePK e2_2 = pattern.createEdge("ACTED_IN", person2_2, movie1_2, {});
+// 	EdgePK e3_2 = pattern.createEdge("DIRECTED", person1_2, movie2_2, {});
+// 	EdgePK e4_2 = pattern.createEdge("DIRECTED", person2_2, movie3_2, {});
+
+// 	VF2Matcher matcher = VF2Matcher(db.graph, pattern);
+// 	auto mappings = matcher.match();
+// 	ASSERT_EQ(mappings.size(), 0) << "Incorrect number of mappings found";
+// }
 } // namespace
 
 int main(int argc, char **argv) {
