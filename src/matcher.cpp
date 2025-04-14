@@ -4,24 +4,25 @@
 
 #include "matcher.hpp"
 
-VF2Matcher::VF2Matcher(const Graph& graph1, const MatchPattern& graph2) : g1(graph1), g2(graph2) {
-    g1InEdges.resize(g1.numNodes());
-    g2InEdges.resize(g2.numNodes());
+VF2Matcher::VF2Matcher(const Graph& graph1, const MatchPattern& graph2) \
+	: g1(graph1)
+	, g2(graph2)
+	, currentMapping(g2.numNodes(), -1)
+	, usedNodes(g1.numNodes(), 0) {
 
     // Obtaining g1 incoming edges mapping
+    g1InEdges.resize(g1.numNodes());
     for (int edgePK = 0; edgePK < g1.numEdges(); ++edgePK) {
         const Edge& edge = g1.edges[edgePK];
         g1InEdges[edge.to].push_back(edgePK);
     }
-    
+
     // Obtaining g2 incoming edges mapping
+    g2InEdges.resize(g2.numNodes());
     for (int edgePK = 0; edgePK < g2.numEdges(); ++edgePK) {
         const Edge& edge = g2.edges[edgePK];
         g2InEdges[edge.to].push_back(edgePK);
     }
-
-    currentMapping = std::vector<NodePK>(g2.numNodes(), -1);
-    usedNodes = std::vector<bool>(g1.numNodes(), 0);
 }
 
 void VF2Matcher::backtrack(size_t depth) {
@@ -46,25 +47,25 @@ void VF2Matcher::backtrack(size_t depth) {
 }
 
 bool VF2Matcher::isFeasible(NodePK n1, NodePK n2) {
-    const Node& node1 = g1.nodes[n1];
-    const MatchNode& node2 = g2.nodes[n2];
-
     // Semantic Check: Labels and properties should match
-    if (!checkSemanticMatch(node1, node2)) return false;
+    if (!checkSemanticMatch(n1, n2)) return false;
 
     // Degree Constraint: g1 should have at least as many outgoing/incoming edges as g2
-    if (!checkDegreeConstraint(node1, node2)) return false;
+    if (!checkDegreeConstraint(n1, n2)) return false;
 
     // Structural Check: Edges must be consistent
-    if (!checkStructuralMatch(node1, node2)) return false;
+    if (!checkStructuralMatch(n1, n2)) return false;
 
     return true;
 }
 
-bool VF2Matcher::checkSemanticMatch(const Node& node1, const MatchNode& node2) {
+bool VF2Matcher::checkSemanticMatch(NodePK n1, NodePK n2) {
+    const Node& node1 = g1.nodes[n1];
+    const MatchNode& node2 = g2.nodes[n2];
+
     // Labels must match
     if (node1.labels != node2.labels) return false;
-    
+
     // Properties in node2 must be a subset of node1
     for (const auto& [key, value] : node2.properties) {
         if (node1.properties.count(key) == 0 || node1.properties.at(key) != value) {
@@ -74,20 +75,26 @@ bool VF2Matcher::checkSemanticMatch(const Node& node1, const MatchNode& node2) {
     return true;
 }
 
-bool VF2Matcher::checkDegreeConstraint(const Node& node1, const MatchNode& node2) {
+bool VF2Matcher::checkDegreeConstraint(NodePK n1, NodePK n2) {
+	const Node& node1 = g1.nodes[n1];
+    const MatchNode& node2 = g2.nodes[n2];
+
     size_t outDegree1 = node1.edges.size(), outDegree2 = node2.edges.size();
-    size_t inDegree1 = g1InEdges[node1.pk].size(), inDegree2 = g2InEdges[node2.pk].size();
+    size_t inDegree1 = g1InEdges[n1].size(), inDegree2 = g2InEdges[n2].size();
 
     if (outDegree1 < outDegree2 || inDegree1 < inDegree2) return false;
     else return true;
 }
 
-bool VF2Matcher::checkStructuralMatch(const Node& node1, const MatchNode& node2) {
+bool VF2Matcher::checkStructuralMatch(NodePK n1, NodePK n2) {
+	const Node& node1 = g1.nodes[n1];
+    const MatchNode& node2 = g2.nodes[n2];
+
     // Outgoing edges must be consistent
     if (!matchEdges(node1.edges, node2.edges)) return false;
 
     // Incoming edges must be consistent
-    if (!matchEdges(g1InEdges[node1.pk], g2InEdges[node2.pk])) return false;
+    if (!matchEdges(g1InEdges[n1], g2InEdges[n2])) return false;
 
     return true;
 }

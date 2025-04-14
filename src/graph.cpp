@@ -6,7 +6,6 @@ NodePK Graph::createNode(std::unordered_set<std::string> labels,
 						 std::unordered_map<std::string, Data> properties)
 {
 	Node node;
-	node.pk = nodes.size();
 	node.labels = labels;
 	node.properties = properties;
 	nodes.push_back(node);
@@ -23,7 +22,6 @@ EdgePK Graph::createEdge(std::string type, NodePK from, NodePK to,
 	}
 
 	Edge edge;
-	edge.pk = edges.size();
 	edge.type = type;
 	edge.from = from;
 	edge.to = to;
