@@ -1,13 +1,28 @@
 #include <vector>
 
 #include "graph.hpp"
-#include "match.hpp"
+
+#include <vector>
+#include <set>
+
+#include "graph.hpp"
+
+using MatchNode = Node;
+using MatchEdge = Edge;
+using MatchMapping = std::vector<NodePK>;
+using MatchResult = std::set<MatchMapping>;
+using MatchResults = std::vector<Graph>;
+using MatchPattern = Graph;
+using WhereExp = void*;
+using MatchResultFmt = void*;
+// using OrderExp = void*;
+// using LimitType = int;
 
 class VF2Matcher {
 private:
     const Graph& g1;
     const MatchPattern& g2;
-    
+
     AdjList g1InEdges; // Given node, get all incoming edges
     AdjList g2InEdges;
 
@@ -26,8 +41,8 @@ public:
 private:
     void backtrack(size_t depth);
     bool isFeasible(NodePK n1, NodePK n2);
-    bool checkSemanticMatch(const Node& node1, const MatchNode& node2);
-    bool checkDegreeConstraint(const Node& node1, const MatchNode& node2);
-    bool checkStructuralMatch(const Node& node1, const MatchNode& node2);
+    bool checkSemanticMatch(NodePK n1, NodePK n2);
+    bool checkDegreeConstraint(NodePK n1, NodePK n2);
+    bool checkStructuralMatch(NodePK n1, NodePK n2);
     bool matchEdges(const std::vector<EdgePK> &edges1, const std::vector<EdgePK> &edges2);
 };
