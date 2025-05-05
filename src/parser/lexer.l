@@ -21,6 +21,9 @@ FULLSTRING     \'[^\']*\'|\"[^\"]*\"
 [ \t\r\n]+    { /* Ignore Whitespace*/ }
 
 "CREATE"        { return CREATE; }
+"TxBEGIN"         { return TxBEGIN; }
+"TxCOMMIT"        { return TxCOMMIT; }
+"TxROLLBACK"      { return TxROLLBACK; }
 
 {ID}          { yylval.str = strdup(yytext); return ID; }
 {INTEGER}      { yylval.num = atoll(yytext); return INTEGER; }
