@@ -111,7 +111,7 @@ bool VF2Matcher::matchEdges(const std::vector<EdgePK> &edges1, const std::vector
         for (EdgePK e1 : edges1) {
             const Edge& edge1 = g1.edges[e1];
 
-            if (edge2.type != edge1.type || currentMapping[edge2.from] != edge1.from || currentMapping[edge2.to] != edge1.to) {
+            if (!(edge2.type == "" || edge2.type == edge1.type) || currentMapping[edge2.from] != edge1.from || currentMapping[edge2.to] != edge1.to) {
                 continue;
             }
 
