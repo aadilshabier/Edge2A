@@ -36,6 +36,7 @@ add_executable(${PROJECT_NAME} src/main.cpp)
 
 target_link_libraries(${MAIN_LIB} PRIVATE ${PARSER_LIB})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${MAIN_LIB} ${PARSER_LIB})
+target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)
 
 # Enable testing and add tests directory
 enable_testing()
