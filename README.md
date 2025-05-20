@@ -34,3 +34,20 @@ ctest
 ./edge2a
 ```
 
+## Demo
+This is a simple demo application which uses graphDB populated with the movies dataset.
+It fetches movies according to filters provided by the user.
+
+`Frontend:  React`
+`Backend:   C++`
+
+Install node dependencies as
+```
+cd ./demo/frontend/
+npm install
+```
+
+Run the application using
+```
+npm start
+```
