@@ -6,6 +6,7 @@
 #include "parser/parser.hpp"
 
 #include <vector>
+#include <memory>
 
 
 class GraphDB
@@ -13,6 +14,7 @@ class GraphDB
 public:
 	Graph graph;
 	std::unordered_map<std::string, NodePK> aliasToNodePKMap;
+	std::unique_ptr<Graph> graphState = nullptr;
 
 public:
 
@@ -34,6 +36,10 @@ public:
 	void loadFromFile(const std::string &filename);
 	void saveToFile(const std::string &filename) const;
 	void getGraphAsStream(std::ostream &os) const;
-
+	
 	void parseCypherScript(const std::string &filename);
+	
+	void beginTransaction();
+	void commitTransaction();
+	void rollbackTransaction();
 };
