@@ -6,20 +6,22 @@
 
 template <typename T, typename K>
 class BPlusTree {
+public:
     TreeNode<T, K>* root;
-    std::size_t degree_k; // Max number of keys
-    std::size_t degree_t; // Max number of values
+    std::size_t degree_inner; // Max number of internal keys/values
+    std::size_t degree_leaf; // Max number of leaf keys/values
 
-private:
-    BPlusTree(std::size_t _degree_k, std::size_t _degree_t)
-        : degree_k(_degree_k), degree_t(_degree_t), root(nullptr) {}
+    BPlusTree(std::size_t _degree_inner, std::size_t _degree_leaf)
+        : degree_inner(_degree_inner), degree_leaf(_degree_leaf), root(nullptr) {}
     ~BPlusTree() { cleanup(root); }
 
+private:
     TreeNode<T, K>* searchNode(K key); // Traverse to the node where key belongs
-    int findIndex(T* arr, T data, int len); // Index based on internal key comparison
-    T* valueInsert(T* arr, T data, int len, int index); // Insert value based on key
-    TreeNode<T, K>** childInsert(TreeNode<T, K>** child_arr,
-            TreeNode<T, K>* child, int len, int index); // Insert child pointer
+    int findIndex(K* arr, K key, int len); // Index based on internal key comparison
+    void insertInternal(K* keys, TreeNode<T, K>** children, K key,
+            TreeNode<T, K>* child, int old_len, int idx); // Insert key/child into internal node
+    void insertLeaf(K* keys, T* values, K key,
+            T data, int old_len, int idx); // Insert key/value into leaf node
     
     void insertPar(TreeNode<T, K>* par, TreeNode<T, K>* child, K key); // Parent insertion
     void removePar(TreeNode<T, K>* node, int index, TreeNode<T, K>* par);
@@ -28,8 +30,9 @@ private:
     void printHelper(TreeNode<T, K>* cursor); // Print recursively
 
 public:
+    // Core functionality
     T* search(K key); // Retrieve data by key
-    void insert(T data, K key); // Insert new data
+    void insert(K key, T data); // Insert new data
     void remove(K key); // Remove data by key
     
     // Iterator support

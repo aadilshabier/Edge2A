@@ -19,7 +19,7 @@ public:
     BPlusTreeIterator& operator++() {
         if (!current_node) return *this;
 
-        ++index;
+        index++;
         if (index >= current_node->size) {
             current_node = current_node->next;
             index = 0;
@@ -33,7 +33,7 @@ public:
     }
 
     bool operator!=(const BPlusTreeIterator& other) const {
-        return !(this == other);
+        return current_node != other.current_node || index != other.index;
     }
 };
 

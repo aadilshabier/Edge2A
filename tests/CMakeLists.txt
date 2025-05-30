@@ -8,6 +8,11 @@ target_link_libraries(TestParsing
   PRIVATE GTest::gtest_main ${MAIN_LIB})
 target_include_directories(TestParsing PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src)
 
+add_executable(TestBPTree TestBPTree.cpp)
+target_link_libraries(TestBPTree
+  PRIVATE GTest::gtest_main ${MAIN_LIB})
+target_include_directories(TestBPTree PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src)
+
 add_executable(TestMatching TestMatching.cpp)
 target_link_libraries(TestMatching
   PRIVATE GTest::gtest_main ${MAIN_LIB})
@@ -21,5 +26,6 @@ target_include_directories(TestMatchingVF2 PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/.
 include(GoogleTest)
 gtest_discover_tests(TestIO)
 gtest_discover_tests(TestParsing)
+gtest_discover_tests(TestBPTree)
 gtest_discover_tests(TestMatching)
 gtest_discover_tests(TestMatchingVF2)
