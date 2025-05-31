@@ -29,8 +29,6 @@ public:
 	EdgePK createEdgeByAlias(const std::string &type, const std::string &fromAlias, const std::string &toAlias,
 					std::unordered_map<std::string, Data> properties={});
 
-	MatchResults match(MatchPattern pattern, WhereExp where, MatchResultFmt resultFmt);
-
 	void loadFromFile(const std::string &filename);
 	void saveToFile(const std::string &filename) const;
 	void getGraphAsStream(std::ostream &os) const;

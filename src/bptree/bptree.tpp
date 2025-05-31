@@ -5,7 +5,7 @@
 
 // Returns TreeNode where a given key is "supposed" to go
 template <typename T, typename K>
-TreeNode<T, K>* BPlusTree<T, K>::searchNode(K key) {
+TreeNode<T, K>* BPlusTree<T, K>::searchNode(K key) const {
     TreeNode<T, K>* cursor = root;
     if (!cursor) return nullptr;  // Tree is empty
 
@@ -22,7 +22,7 @@ TreeNode<T, K>* BPlusTree<T, K>::searchNode(K key) {
 
 // Return the index where an item is supposed to go
 template <typename T, typename K>
-int BPlusTree<T, K>::findIndex(K* arr, K key, int len) {
+int BPlusTree<T, K>::findIndex(K* arr, K key, int len) const {
     int i = 0;
     while (i < len && key > arr[i]) {
         i++;
@@ -58,7 +58,7 @@ void BPlusTree<T, K>::insertLeaf(K* keys, T* values,
 
 // Return ptr if the item exists. Return null if not.
 template <typename T, typename K>
-T* BPlusTree<T, K>::search(K key) {
+T* BPlusTree<T, K>::search(K key) const {
     TreeNode<T, K>* node = searchNode(key);
     if (!node || !node->is_leaf) {
         return nullptr;
@@ -141,6 +141,8 @@ void BPlusTree<T, K>::insertPar(TreeNode<T, K>* par, TreeNode<T, K>* child, K ke
 // Insert an item into the tree.
 template <typename T, typename K>
 void BPlusTree<T, K>::insert(K key, T data) {
+    this->currentSize++; // Increment size of the tree cause insertion
+
     if (!root) {
         // Tree is empty
         root = new TreeNode<T, K>(degree_inner, degree_leaf, true);
@@ -303,6 +305,8 @@ void BPlusTree<T, K>::remove(K key) {
     TreeNode<T, K>* leaf = searchNode(key);
     if (!leaf) return;
 
+    this->currentSize--; // Decrement size of the tree cause deletion
+
     int idx = -1;
     for (std::size_t i = 0; i < leaf->size; i++) {
         if (leaf->keys[i] == key) {
@@ -403,7 +407,7 @@ void BPlusTree<T, K>::cleanup(TreeNode<T, K>* cursor) {
 
 // Iterator: begin
 template <typename T, typename K>
-typename BPlusTree<T, K>::bptIterator BPlusTree<T, K>::begin() {
+typename BPlusTree<T, K>::bptIterator BPlusTree<T, K>::begin() const {
     TreeNode<T, K>* cursor = root;
     if (!cursor) return bptIterator(nullptr, 0);
 
@@ -415,13 +419,13 @@ typename BPlusTree<T, K>::bptIterator BPlusTree<T, K>::begin() {
 
 // Iterator: end
 template <typename T, typename K>
-typename BPlusTree<T, K>::bptIterator BPlusTree<T, K>::end() {
+typename BPlusTree<T, K>::bptIterator BPlusTree<T, K>::end() const {
     return bptIterator(nullptr, 0);
 }
 
 // Print recursively
 template <typename T, typename K>
-void BPlusTree<T, K>::printHelper(TreeNode<T, K>* cursor) {
+void BPlusTree<T, K>::printHelper(TreeNode<T, K>* cursor) const {
     if (!cursor) return;
 
     std::cout << (cursor->is_leaf ? "[Leaf] " : "[Internal] ") << "Keys: ";
@@ -439,7 +443,7 @@ void BPlusTree<T, K>::printHelper(TreeNode<T, K>* cursor) {
 
 // Print the full tree
 template <typename T, typename K>
-void BPlusTree<T, K>::print() {
+void BPlusTree<T, K>::print() const {
     std::cout << "B+ Tree Structure:\n";
     printHelper(root);
 }

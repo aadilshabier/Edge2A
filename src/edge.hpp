@@ -8,6 +8,7 @@
 class Edge
 {
 public:
+	EdgePK pk;
 	std::string type;
 	std::unordered_map<std::string, Data> properties;
 

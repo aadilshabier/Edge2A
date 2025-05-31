@@ -7,9 +7,15 @@
 
 class Graph
 {
+private:
+	NodePK nodePkCount;
+	EdgePK edgePkCount;
+	
 public:
 	std::vector<Node> nodes;
 	std::vector<Edge> edges;
+
+	Graph();
 
 	NodePK createNode(std::unordered_set<std::string> labels={},
 					  std::unordered_map<std::string, Data> properties={});

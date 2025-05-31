@@ -2,15 +2,22 @@
 
 #include <iostream>
 
+Graph::Graph()
+{
+	nodePkCount = 0;
+	edgePkCount = 0;
+}
+
 NodePK Graph::createNode(std::unordered_set<std::string> labels,
 						 std::unordered_map<std::string, Data> properties)
 {
 	Node node;
+	node.pk = nodePkCount++;
 	node.labels = labels;
 	node.properties = properties;
 	nodes.push_back(node);
 
-	return nodes.size()-1;
+	return node.pk;
 }
 
 EdgePK Graph::createEdge(std::string type, NodePK from, NodePK to,
@@ -22,6 +29,7 @@ EdgePK Graph::createEdge(std::string type, NodePK from, NodePK to,
 	}
 
 	Edge edge;
+	edge.pk = edgePkCount++;
 	edge.type = type;
 	edge.from = from;
 	edge.to = to;
@@ -31,7 +39,7 @@ EdgePK Graph::createEdge(std::string type, NodePK from, NodePK to,
 	auto edgeId = edges.size()-1;
 	nodes[from].edges.push_back(edgeId);
 
-	return edgeId;
+	return edge.pk;
 }
 
 EdgePK Graph::getEdgeByNodesAndType(NodePK from, NodePK to, std::string type)
