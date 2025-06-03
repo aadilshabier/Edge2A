@@ -2,12 +2,6 @@
 
 #include <iostream>
 
-Graph::Graph()
-{
-	nodePkCount = 0;
-	edgePkCount = 0;
-}
-
 NodePK Graph::createNode(std::unordered_set<std::string> labels,
 						 std::unordered_map<std::string, Data> properties)
 {
@@ -15,7 +9,7 @@ NodePK Graph::createNode(std::unordered_set<std::string> labels,
 	node.pk = nodePkCount++;
 	node.labels = labels;
 	node.properties = properties;
-	nodes.push_back(node);
+	nodes.insert(node.pk, node);
 
 	return node.pk;
 }
@@ -23,21 +17,15 @@ NodePK Graph::createNode(std::unordered_set<std::string> labels,
 EdgePK Graph::createEdge(std::string type, NodePK from, NodePK to,
 						 std::unordered_map<std::string, Data> properties)
 {
-	if (from >= nodes.size() or to >= nodes.size()) {
-		std::cerr << "ERROR: " << from << " or " << to << " is greater than " << nodes.size()-1 << std::endl;
-		return -1;
-	}
-
 	Edge edge;
 	edge.pk = edgePkCount++;
 	edge.type = type;
 	edge.from = from;
 	edge.to = to;
 	edge.properties = properties;
-	edges.push_back(edge);
+	edges.insert(edge.pk, edge);
 
-	auto edgeId = edges.size()-1;
-	nodes[from].edges.push_back(edgeId);
+	nodes.search(from)->edges.push_back(edge.pk);
 
 	return edge.pk;
 }
@@ -45,8 +33,9 @@ EdgePK Graph::createEdge(std::string type, NodePK from, NodePK to,
 EdgePK Graph::getEdgeByNodesAndType(NodePK from, NodePK to, std::string type)
 {
 	std::vector<EdgePK> edgePKs;
-	for (auto edgePK : nodes[from].edges) {
-		if (edges[edgePK].to == to and edges[edgePK].type == type) {
+	for (auto edgePK : nodes.search(from)->edges) {
+		Edge *currEdge = edges.search(edgePK);
+		if (currEdge->to == to and currEdge->type == type) {
 			return edgePK;
 		}
 	}

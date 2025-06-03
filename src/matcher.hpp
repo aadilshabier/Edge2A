@@ -37,8 +37,8 @@ public:
 private:
     void backtrack(size_t depth);
     bool isFeasible(NodePK n1, NodePK n2);
-    bool checkSemanticMatch(NodePK n1, NodePK n2);
-    bool checkDegreeConstraint(NodePK n1, NodePK n2);
-    bool checkStructuralMatch(NodePK n1, NodePK n2);
+    bool checkSemanticMatch(const Node& node1, const MatchNode& node2);
+    bool checkDegreeConstraint(const Node& node1, const MatchNode& node2);
+    bool checkStructuralMatch(const Node& node1, const MatchNode& node2);
     bool matchEdges(const std::vector<EdgePK> &edges1, const std::vector<EdgePK> &edges2);
 };

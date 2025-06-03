@@ -4,6 +4,12 @@
 
 #include "edge.hpp"
 #include "node.hpp"
+#include "bptree/bptree.hpp"
+
+#define NODEKEYCOUNT 128
+#define EDGEKEYCOUNT 128
+#define NODELEAFCOUNT 16
+#define EDGELEAFCOUNT 16
 
 class Graph
 {
@@ -12,10 +18,11 @@ private:
 	EdgePK edgePkCount;
 	
 public:
-	std::vector<Node> nodes;
-	std::vector<Edge> edges;
+	BPlusTree<Node, NodePK> nodes;
+	BPlusTree<Edge, EdgePK> edges;
 
-	Graph();
+	Graph(): nodes(NODEKEYCOUNT, NODELEAFCOUNT), edges(EDGEKEYCOUNT, EDGELEAFCOUNT),
+			nodePkCount(0), edgePkCount(0) {};
 
 	NodePK createNode(std::unordered_set<std::string> labels={},
 					  std::unordered_map<std::string, Data> properties={});
@@ -31,6 +38,10 @@ public:
 
 	size_t numEdges() const {
 		return edges.size();
+	}
+
+	size_t getMaxNodePK() const {
+		return nodes.getMaxKey();
 	}
 
 public:

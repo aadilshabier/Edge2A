@@ -423,6 +423,21 @@ typename BPlusTree<T, K>::bptIterator BPlusTree<T, K>::end() const {
     return bptIterator(nullptr, 0);
 }
 
+// Get the maximum key in the tree
+template <typename T, typename K>
+K BPlusTree<T, K>::getMaxKey() const {
+    if (!root) {
+        throw std::runtime_error("Tree is empty");
+    }
+
+    TreeNode<T, K>* cursor = root;
+    while (!cursor->is_leaf) {
+        cursor = cursor->children[cursor->size];
+    }
+
+    return cursor->keys[cursor->size - 1]; // Last key in the leaf
+}
+
 // Print recursively
 template <typename T, typename K>
 void BPlusTree<T, K>::printHelper(TreeNode<T, K>* cursor) const {
