@@ -22,7 +22,7 @@ TEST_F(GraphDBMatchingVF2Test, MatchNodeSimple) {
 
 	auto mapping = *mappings.begin();
 	NodePK mappedNode = mapping[n2];
-	auto born = std::get<DataIntType>(db.graph.nodes[mappedNode].properties["born"]);
+	auto born = std::get<DataIntType>(db.graph.nodes.search(mappedNode)->properties["born"]);
 	EXPECT_EQ(born, 1964) << "Incorrect year of birth";
 }
 
@@ -40,7 +40,7 @@ TEST_F(GraphDBMatchingVF2Test, MatchNodesAndEdges) {
 
 	auto mapping = *mappings.begin();
 	NodePK mappedMovie = mapping[movie_2];
-	auto title = std::get<DataStringType>(db.graph.nodes[mappedMovie].properties["title"]);
+	auto title = std::get<DataStringType>(db.graph.nodes.search(mappedMovie)->properties["title"]);
 	EXPECT_EQ(title, "That Thing You Do") << "Incorrect movie title";
 }
 
@@ -59,7 +59,7 @@ TEST_F(GraphDBMatchingVF2Test, MatchNodeWithMultipleResults) {
 	std::unordered_set<std::string> mappedNames;
 	for (auto mapping : mappings) {
 		NodePK mappedPerson = mapping[person_2];
-		auto name = std::get<DataStringType>(db.graph.nodes[mappedPerson].properties["name"]);
+		auto name = std::get<DataStringType>(db.graph.nodes.search(mappedPerson)->properties["name"]);
 		mappedNames.insert(name);
 	}
 

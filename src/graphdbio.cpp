@@ -85,7 +85,7 @@ void GraphDB::loadFromFile(const std::string &filename)
 
 	for (const auto &edge : j["edges"]) {
 		auto edgeId = createEdge(edge["type"], edge["properties"], edge["from"], edge["to"]);
-	    graph.nodes[edge["from"]].edges.push_back(edgeId);
+	    graph.nodes.search(edge["from"])->edges.push_back(edgeId);
 	}
 }
 

@@ -11,11 +11,11 @@ public:
     TreeNode<T, K>* root;
     std::size_t degree_inner; // Max number of internal keys/values
     std::size_t degree_leaf; // Max number of leaf keys/values
-    
+
     BPlusTree(std::size_t _degree_inner, std::size_t _degree_leaf)
-    : degree_inner(_degree_inner), degree_leaf(_degree_leaf), root(nullptr) {}
+    : degree_inner(_degree_inner), degree_leaf(_degree_leaf), root(nullptr), currentSize(0) {}
     ~BPlusTree() { cleanup(root); }
-    
+
 private:
     uint32_t currentSize; // Current number of keys/values
     
@@ -44,7 +44,8 @@ public:
     bptIterator begin() const;  // First data item in the leftmost leaf
     bptIterator end() const;    // One-past-the-last element
 
-    // Utils
+    // Others
+    K getMaxKey() const; // Get the maximum key in the tree
     void print() const; // Print the full tree
 };
 
