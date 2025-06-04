@@ -119,7 +119,8 @@ void BPlusTree<T, K>::insertPar(TreeNode<T, K>* par, TreeNode<T, K>* child, K ke
             new_internal->children[i]->parent = new_internal;
         }
         new_internal->children[new_internal->size] = temp_children[degree_inner + 1];
-        new_internal->children[new_internal->size]->parent = new_internal;
+        if (new_internal->children[new_internal->size])
+            new_internal->children[new_internal->size]->parent = new_internal;
 
         K pushup_key = temp_keys[mid];
 
@@ -206,9 +207,35 @@ void BPlusTree<T, K>::insert(K key, T data) {
     }
 }
 
+// Remove an orphan key from internal nodes.
+// Orphan key := key whose value does not exist in the tree.
 template <typename T, typename K>
-void BPlusTree<T, K>::removePar(TreeNode<T, K>* node, int index, TreeNode<T, K>* par) {
-    // Shift keys and children in parent
+void BPlusTree<T, K>::replaceOrphanKey(TreeNode<T, K>* par, K oldKey, K newKey) {
+    if (!par) return; // Orphan key does not exist
+
+    // Find the index of the old key in the parent
+    int idx = -1;
+    for (std::size_t i = 0; i < par->size; i++) {
+        if (par->keys[i] >= oldKey) {
+            if (par->keys[i] == oldKey) {
+                idx = i;
+            }
+            break;
+        }
+    }
+
+    if (idx != -1) {
+        // Key found, replace with new key
+        par->keys[idx] = newKey;
+    } else {
+        // Key not found, continue searching in parent
+        replaceOrphanKey(par->parent, oldKey, newKey);
+    }
+}
+
+template <typename T, typename K>
+void BPlusTree<T, K>::removePar(TreeNode<T, K>* par, int index) {
+    // Shift keys and children in parent since a node was merged
     for (int i = index; i < par->size - 1; i++) {
         par->keys[i] = par->keys[i + 1];
         par->children[i + 1] = par->children[i + 2];
@@ -216,83 +243,83 @@ void BPlusTree<T, K>::removePar(TreeNode<T, K>* node, int index, TreeNode<T, K>*
     par->size--;
 
     if (par == root && par->size == 0) {
-        // If root becomes empty
+        // par->size == 0 implies at max one child remains
         root = par->children[0];
+        delete par;
         if (root)
             root->parent = nullptr;
-        delete par;
         return;
     }
 
     // If parent underflows
-    if (par->size < (degree_inner + 1) / 2) {
+    if (par->size < degree_inner / 2) {
         TreeNode<T, K>* parent = par->parent;
         if (!parent) return; // Root
 
         // Find par’s index in grandparent
         int p_idx = 0;
-        while (p_idx <= parent->size && parent->children[p_idx] != par)
-            p_idx++;
+        while (parent->children[p_idx] != par) ++p_idx;
 
-        TreeNode<T, K>* left_sibling = (p_idx > 0) ? parent->children[p_idx - 1] : nullptr;
-        TreeNode<T, K>* right_sibling = (p_idx < parent->size) ? parent->children[p_idx + 1] : nullptr;
+        TreeNode<T, K>* left = (p_idx > 0) ? parent->children[p_idx - 1] : nullptr;
+        TreeNode<T, K>* right = (p_idx < parent->size) ? parent->children[p_idx + 1] : nullptr;
 
-        if (right_sibling && right_sibling->size > (degree_inner + 1) / 2) {
-            // Borrow from right
+        if (right && right->size > degree_inner / 2) { // Borrow from right if enough keys are present
             par->keys[par->size] = parent->keys[p_idx];
-            par->children[par->size + 1] = right_sibling->children[0];
+            par->children[par->size + 1] = right->children[0];
             par->children[par->size + 1]->parent = par;
             par->size++;
 
-            parent->keys[p_idx] = right_sibling->keys[0];
-            for (int i = 0; i < right_sibling->size - 1; i++) {
-                right_sibling->keys[i] = right_sibling->keys[i + 1];
-                right_sibling->children[i] = right_sibling->children[i + 1];
+            parent->keys[p_idx] = right->keys[0];
+            for (int i = 0; i < right->size - 1; i++) {
+                right->keys[i] = right->keys[i + 1];
+                right->children[i] = right->children[i + 1];
             }
-            right_sibling->children[right_sibling->size - 1] = right_sibling->children[right_sibling->size];
-            right_sibling->size--;
-        } else if (left_sibling && left_sibling->size > (degree_inner + 1) / 2) {
-            // Borrow from left
+            right->children[right->size - 1] = right->children[right->size];
+            right->size--;
+        } else if (left && left->size > degree_inner / 2) { // Borrow from left if enough keys are present
             for (int i = par->size; i > 0; i--) {
                 par->keys[i] = par->keys[i - 1];
                 par->children[i + 1] = par->children[i];
             }
             par->children[1] = par->children[0];
+            
             par->keys[0] = parent->keys[p_idx - 1];
-            par->children[0] = left_sibling->children[left_sibling->size];
+            par->children[0] = left->children[left->size];
             par->children[0]->parent = par;
             par->size++;
 
-            parent->keys[p_idx - 1] = left_sibling->keys[left_sibling->size - 1];
-            left_sibling->size--;
+            parent->keys[p_idx - 1] = left->keys[left->size - 1];
+            left->size--;
         } else {
-            // Merge with sibling
-            TreeNode<T, K>* sibling;
-            int sibling_idx;
+            // Merge internal nodes
+            TreeNode<T, K>* merge_into;
+            TreeNode<T, K>* merge_from;
+            int merge_idx;
 
-            if (right_sibling) {
-                sibling = right_sibling;
-                sibling_idx = p_idx;
+            if (right) {
+                merge_into = par;
+                merge_from = right;
+                merge_idx = p_idx;
             } else {
-                sibling = par;
-                par = left_sibling;
-                sibling_idx = p_idx - 1;
+                merge_into = left;
+                merge_from = par;
+                merge_idx = p_idx - 1;
             }
 
-            // Merge sibling into par
-            par->keys[par->size] = parent->keys[sibling_idx];
-            for (int i = 0; i < sibling->size; i++) {
-                par->keys[par->size + 1 + i] = sibling->keys[i];
-                par->children[par->size + 1 + i] = sibling->children[i];
-                par->children[par->size + 1 + i]->parent = par;
+            merge_into->keys[merge_into->size] = parent->keys[merge_idx];
+            for (int i = 0; i < merge_from->size; i++) {
+                merge_into->keys[merge_into->size + 1 + i] = merge_from->keys[i];
+                merge_into->children[merge_into->size + 1 + i] = merge_from->children[i];
+                merge_into->children[merge_into->size + 1 + i]->parent = merge_into;
             }
-            par->children[par->size + 1 + sibling->size] = sibling->children[sibling->size];
-            if (par->children[par->size + 1 + sibling->size])
-                par->children[par->size + 1 + sibling->size]->parent = par;
+            merge_into->children[merge_into->size + 1 + merge_from->size] = merge_from->children[merge_from->size];
+            if (merge_into->children[merge_into->size + 1 + merge_from->size])
+                merge_into->children[merge_into->size + 1 + merge_from->size]->parent = merge_into;
 
-            par->size += sibling->size + 1;
-            removePar(sibling, sibling_idx, parent);
-            delete sibling;
+            merge_into->size += merge_from->size + 1;
+            
+            delete merge_from;
+            removePar(parent, merge_idx);
         }
     }
 }
@@ -314,13 +341,26 @@ void BPlusTree<T, K>::remove(K key) {
             break;
         }
     }
-    if (idx == -1) return; // Key not found
+    assert(idx != -1 && "Key not found in the leaf node");
 
     for (int i = idx; i < leaf->size - 1; i++) {
         leaf->keys[i] = leaf->keys[i + 1];
         leaf->values[i] = leaf->values[i + 1];
     }
     leaf->size--;
+
+    // Remove orphan key from parent if necessary
+    if (idx == 0) {
+        // if idx is 0, this was the first key, hence
+        // the key might also exist in an internal node
+        // which we call here an an "orphan key"
+        if (leaf->size > 0) {
+            replaceOrphanKey(leaf->parent, key, leaf->keys[0]);
+        }
+        else if (leaf->next) {
+            replaceOrphanKey(leaf->parent, key, leaf->next->keys[0]);
+        }
+    }
 
     // Underflow handling
     if (leaf == root) {
@@ -331,7 +371,7 @@ void BPlusTree<T, K>::remove(K key) {
         return;
     }
 
-    if (leaf->size >= (degree_leaf + 1) / 2) return; // Enough values left
+    if (leaf->size >= degree_leaf / 2) return; // Enough keys left
 
     TreeNode<T, K>* parent = leaf->parent;
     int leaf_idx = 0;
@@ -340,8 +380,7 @@ void BPlusTree<T, K>::remove(K key) {
     TreeNode<T, K>* left = (leaf_idx > 0) ? parent->children[leaf_idx - 1] : nullptr;
     TreeNode<T, K>* right = (leaf_idx < parent->size) ? parent->children[leaf_idx + 1] : nullptr;
 
-    if (right && right->size > (degree_leaf + 1) / 2) {
-        // Borrow from right
+    if (right && right->size > degree_leaf / 2) { // Borrow from right if enough keys are present
         leaf->keys[leaf->size] = right->keys[0];
         leaf->values[leaf->size] = right->values[0];
         leaf->size++;
@@ -352,8 +391,7 @@ void BPlusTree<T, K>::remove(K key) {
         }
         right->size--;
         parent->keys[leaf_idx] = right->keys[0];
-    } else if (left && left->size > (degree_leaf + 1) / 2) {
-        // Borrow from left
+    } else if (left && left->size > degree_leaf / 2) { // Borrow from left if enough keys are present
         for (int i = leaf->size; i > 0; i--) {
             leaf->keys[i] = leaf->keys[i - 1];
             leaf->values[i] = leaf->values[i - 1];
@@ -361,10 +399,11 @@ void BPlusTree<T, K>::remove(K key) {
         leaf->keys[0] = left->keys[left->size - 1];
         leaf->values[0] = left->values[left->size - 1];
         leaf->size++;
+
         left->size--;
         parent->keys[leaf_idx - 1] = leaf->keys[0];
     } else {
-        // Merge
+        // Merge leaf nodes
         TreeNode<T, K>* merge_into;
         TreeNode<T, K>* merge_from;
         int merge_idx;
@@ -385,9 +424,9 @@ void BPlusTree<T, K>::remove(K key) {
         }
         merge_into->size += merge_from->size;
         merge_into->next = merge_from->next;
-
-        removePar(merge_from, merge_idx, parent);
+        
         delete merge_from;
+        removePar(parent, merge_idx);
     }
 }
 

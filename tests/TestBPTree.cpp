@@ -73,7 +73,7 @@ TEST_F(BPTreeTest, Iteration) {
 }
 
 TEST_F(BPTreeTest, Deletion) {
-	std::vector<int> keys_to_delete = {21, 31, 20, 10, 7, 25, 42};
+	std::vector<int> keys_to_delete = {21, 31, 20, 10, 7, 25, 42, 17, 19};
 	
 	for (int key : keys_to_delete) {
 		bptree.remove(key);
@@ -82,7 +82,7 @@ TEST_F(BPTreeTest, Deletion) {
 	// Checks for expected structure after deletions
 
 	// Key / Value & Size checks
-	EXPECT_EQ(bptree.root->keys[0], 17);
+	EXPECT_EQ(bptree.root->keys[0], 4);
 	EXPECT_EQ(bptree.root->keys[1], 28);
 	EXPECT_EQ(bptree.root->size, 2);
 
@@ -90,8 +90,7 @@ TEST_F(BPTreeTest, Deletion) {
 	EXPECT_EQ(bptree.root->children[0]->size, 1);
 
 	EXPECT_EQ(bptree.root->children[1]->keys[0], 4);
-	EXPECT_EQ(bptree.root->children[1]->keys[1], 19);
-	EXPECT_EQ(bptree.root->children[1]->size, 2);
+	EXPECT_EQ(bptree.root->children[1]->size, 1);
 	
 	EXPECT_EQ(bptree.root->children[2]->keys[0], 28);
 	EXPECT_EQ(bptree.root->children[2]->size, 1);
