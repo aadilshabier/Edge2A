@@ -27,7 +27,8 @@ private:
             T data, int old_len, int idx); // Insert key/value into leaf node
     
     void insertPar(TreeNode<T, K>* par, TreeNode<T, K>* child, K key); // Parent insertion
-    void removePar(TreeNode<T, K>* node, int index, TreeNode<T, K>* par);
+    void replaceOrphanKey(TreeNode<T, K>* par, K oldKey, K newKey); // Replace key at internal node
+    void removePar(TreeNode<T, K>* par, int index); // Removal at parent
 
     void cleanup(TreeNode<T, K>* cursor); // Cleanup tree
     void printHelper(TreeNode<T, K>* cursor) const; // Print recursively
