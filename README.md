@@ -60,7 +60,7 @@ pre-commit run --all-files # run manually
 ### Code Formatting
 
 ```shell
-clang-format -i $(find src -name '*.cpp' -o -name '*.hpp' 2>/dev/null)
+clang-format -i $(find src tests -name '*.cpp' -o -name '*.hpp' 2>/dev/null)
 ```
 
 ### Linting
