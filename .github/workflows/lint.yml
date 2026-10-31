@@ -1,12 +1,11 @@
-name: Code Linting
+name: Lint
 
 on:
   push:
-  pull_request:
 
 jobs:
   lint:
-    name: Lint check (Cppcheck & Clang-Tidy)
+    name: Cppcheck & Clang-Tidy
     runs-on: ubuntu-latest
 
     steps:
