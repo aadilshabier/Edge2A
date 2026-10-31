@@ -5,13 +5,12 @@
 #include <string>
 #include <unordered_map>
 
-class Edge
-{
+class Edge {
 public:
-	EdgePK pk;
-	std::string type;
-	std::unordered_map<std::string, Data> properties;
+    EdgePK pk;
+    std::string type;
+    std::unordered_map<std::string, Data> properties;
 
-	NodePK from;
-	NodePK to;
+    NodePK from;
+    NodePK to;
 };

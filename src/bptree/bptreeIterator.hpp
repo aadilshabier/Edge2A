@@ -5,19 +5,18 @@
 
 template <typename T, typename K>
 class BPlusTreeIterator {
-    TreeNode<T, K>* current_node;
+    TreeNode<T, K> *current_node;
     std::size_t index;
 
 public:
-    BPlusTreeIterator(TreeNode<T, K>* node = nullptr, std::size_t idx = 0)
+    BPlusTreeIterator(TreeNode<T, K> *node = nullptr, std::size_t idx = 0)
         : current_node(node), index(idx) {}
 
-    T& operator*() {
-        return current_node->values[index];
-    }
+    T &operator*() { return current_node->values[index]; }
 
-    BPlusTreeIterator& operator++() {
-        if (!current_node) return *this;
+    BPlusTreeIterator &operator++() {
+        if (!current_node)
+            return *this;
 
         index++;
         if (index >= current_node->size) {
@@ -28,11 +27,11 @@ public:
         return *this;
     }
 
-    bool operator==(const BPlusTreeIterator& other) const {
+    bool operator==(const BPlusTreeIterator &other) const {
         return current_node == other.current_node && index == other.index;
     }
 
-    bool operator!=(const BPlusTreeIterator& other) const {
+    bool operator!=(const BPlusTreeIterator &other) const {
         return current_node != other.current_node || index != other.index;
     }
 };
