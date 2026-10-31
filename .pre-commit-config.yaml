@@ -1,0 +1,16 @@
+repos:
+  # format check
+  - repo: https://github.com/pre-commit/mirrors-clang-format
+    rev: v18.1.8
+    hooks:
+      - id: clang-format
+        types_or: [c++, c]
+
+  # quick lint check
+  - repo: local
+    hooks:
+      - id: cppcheck
+        name: cppcheck
+        entry: cppcheck --enable=warning,style,performance --error-exitcode=1 --inline-suppr
+        language: system
+        types_or: [c++, c]

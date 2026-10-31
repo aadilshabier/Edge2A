@@ -477,6 +477,16 @@ K BPlusTree<T, K>::getMaxKey() const {
     return cursor->keys[cursor->size - 1]; // Last key in the leaf
 }
 
+// retrieve a const value by key
+template <typename T, typename K>
+T& BPlusTree<T, K>::operator[](K& key) const {
+    T* val = search(key);
+    if (!val) {
+        throw std::runtime_error("Key not found in BPlusTree");
+    }
+    return *val;
+}
+
 // Print recursively
 template <typename T, typename K>
 void BPlusTree<T, K>::printHelper(TreeNode<T, K>* cursor) const {

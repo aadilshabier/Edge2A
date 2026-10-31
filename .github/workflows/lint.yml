@@ -1,0 +1,30 @@
+name: Code Linting
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint:
+    name: Lint check (Cppcheck & Clang-Tidy)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Build & Linting Tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y flex bison build-essential cmake cppcheck clang-tidy
+
+      - name: Configure CMake & Generate Compile Commands
+        run: cmake -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+      - name: Run Cppcheck
+        run: |
+          cppcheck --enable=all --suppress=missingIncludeSystem --error-exitcode=1 src/
+
+      - name: Run Clang-Tidy
+        run: |
+          clang-tidy -p build -header-filter='src/.*' --warnings-as-errors='*' $(find src -name '*.cpp')

@@ -39,10 +39,10 @@ EdgePK buildEdge(MatchPattern &pattern, std::string role, NodePK from, NodePK to
 
 int main()
 {
-	GraphDB graph;
+	GraphDB db;
 	httplib::Server svr;
 
-	graph.parseCypherScript("../cypherScripts/movies.cypher");
+	db.parseCypherScript("../cypherScripts/movies.cypher");
 
 	svr.Options("/.*", [](const httplib::Request& req, httplib::Response& res) {
         res.set_header("Access-Control-Allow-Origin", "http://localhost:3000");
@@ -51,7 +51,7 @@ int main()
         res.status = 204; // No Content
     });
 
-	svr.Post("/movies", [&graph](const httplib::Request& req, httplib::Response& res) {
+	svr.Post("/movies", [&db](const httplib::Request& req, httplib::Response& res) {
 		MatchPattern pattern;
 		NodePK n0 = pattern.createNode({"Movie"});
 
@@ -63,17 +63,17 @@ int main()
 			auto n = pattern.createNode({"Person"}, {{"name", name}});
 			auto e = buildEdge(pattern, role, n, n0);
 		}
-		auto matcher = VF2Matcher(graph.graph, pattern);
+		auto matcher = VF2Matcher(db.graph, pattern);
 		auto mappings = matcher.match();
 
 		auto results = nlohmann::json::array();
 		for (const auto &mapping : mappings) {
 			NodePK mappedNode = mapping[n0];
-			auto title = std::get<DataStringType>(graph.graph.nodes[mappedNode]
+			auto title = std::get<DataStringType>(db.graph.nodes[mappedNode]
 												 .properties["title"]);
-			auto year = std::get<DataIntType>(graph.graph.nodes[mappedNode]
+			auto year = std::get<DataIntType>(db.graph.nodes[mappedNode]
 											  .properties["released"]);
-			auto tagline = std::get<DataStringType>(graph.graph.nodes[mappedNode]
+			auto tagline = std::get<DataStringType>(db.graph.nodes[mappedNode]
 												 .properties["tagline"]);
 			auto result = nlohmann::json::object({{"title", title},{"year", year},
 												  {"tagline", tagline}});

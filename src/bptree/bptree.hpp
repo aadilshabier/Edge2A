@@ -16,6 +16,8 @@ public:
     : degree_inner(_degree_inner), degree_leaf(_degree_leaf), root(nullptr), currentSize(0) {}
     ~BPlusTree() { cleanup(root); }
 
+    T& operator[](K& key) const;
+
 private:
     uint32_t currentSize; // Current number of keys/values
     
@@ -50,5 +52,5 @@ public:
     void print() const; // Print the full tree
 };
 
-#include "bptree.tpp"
+#include "bptree.cpp"
 #endif
