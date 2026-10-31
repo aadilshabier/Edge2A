@@ -1,12 +1,11 @@
-name: Build & Test
+name: CI
 
 on:
   push:
-  pull_request:
 
 jobs:
   build-and-test:
-    name: Build & Test (Ubuntu C++20)
+    name: Build & Test
     runs-on: ubuntu-latest
 
     steps:
