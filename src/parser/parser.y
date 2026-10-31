@@ -25,6 +25,7 @@ std::unordered_map<std::string, Data> current_properties;
 
 // Token definitions
 %token CREATE LPAREN RPAREN LBRACE RBRACE LBRACKET RBRACKET COLON SEMICOLON COMMA DASH ARROW
+%token TxBEGIN TxCOMMIT TxROLLBACK
 %token <str> ID FULLSTRING
 %token <num> INTEGER
 %token <flt> FLOAT
@@ -36,8 +37,11 @@ std::unordered_map<std::string, Data> current_properties;
 // Entry point
 statements:
     statements create_statement
+    | statements transaction_statement
     | %empty
     ;
+
+// Create statements
 
 create_statement:
     create_statement SEMICOLON
@@ -73,6 +77,38 @@ edge_statement:
     }
     ;
 
+// Transaction statements
+
+transaction_statement:
+    transaction_statement SEMICOLON
+    | transaction_begin
+    | transaction_commit
+    | transaction_rollback
+    ;
+
+transaction_begin:
+    COLON TxBEGIN
+    {
+        // graphDB->beginTransaction();
+    }
+    ;
+
+transaction_commit:
+    COLON TxCOMMIT
+    {
+        // graphDB->commitTransaction();
+    }
+    ;
+
+transaction_rollback:
+    COLON TxROLLBACK
+    {
+        // graphDB->rollbackTransaction();
+    }
+    ;
+
+// General
+
 properties:
     LBRACE property_list RBRACE
     | %empty
@@ -100,9 +136,10 @@ property_value:
 	  }
     ;
 
-item_list: item_list COMMA property_value { current_array.push_back(current_value); }
-         | property_value { current_array.push_back(current_value); }
-;
+item_list:
+    item_list COMMA property_value { current_array.push_back(current_value); }
+    | property_value { current_array.push_back(current_value); }
+    ;
 
 STRING:
     FULLSTRING { 

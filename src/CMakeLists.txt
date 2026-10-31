@@ -3,6 +3,7 @@ target_sources(${MAIN_LIB} PRIVATE
   graph.cpp
   graphUtils.cpp
   graphdb.cpp
+  graphdbTx.cpp
   matcher.cpp
 )
 
