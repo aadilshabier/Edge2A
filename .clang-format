@@ -2,3 +2,6 @@ BasedOnStyle: LLVM
 IndentWidth: 4
 ColumnLimit: 100
 BreakBeforeBraces: Attach
+AlwaysBreakTemplateDeclarations: Yes
+AccessModifierOffset: -4
+AlignTrailingComments: Leave
