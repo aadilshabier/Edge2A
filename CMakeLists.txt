@@ -28,6 +28,9 @@ add_subdirectory(src)
 target_link_libraries(${MAIN_LIB} PRIVATE nlohmann_json::nlohmann_json)
 # TODO: set public include directory for ${MAIN_LIB}
 
+# Include third-party dependencies
+target_include_directories(${MAIN_LIB} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/deps)
+
 # Library for parser
 add_subdirectory(src/parser)
 

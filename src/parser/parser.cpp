@@ -1,11 +1,11 @@
 #include "parser.hpp"
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <sstream>
 
 extern int yyparse();
 extern GraphDB *graphDB;
-extern FILE* yyin;
+extern FILE *yyin;
 
 void Parser::parseCypherScript(const std::string &filename, GraphDB &db) {
     yyin = fopen(filename.c_str(), "r");

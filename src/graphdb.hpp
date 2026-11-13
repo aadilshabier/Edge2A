@@ -7,31 +7,30 @@
 
 #include <vector>
 
-
-class GraphDB
-{
+class GraphDB {
 public:
-	Graph graph;
-	std::unordered_map<std::string, NodePK> aliasToNodePKMap;
+    Graph graph;
+    std::unordered_map<std::string, NodePK> aliasToNodePKMap;
 
 public:
+    explicit GraphDB() {}
 
-	explicit GraphDB() {}
+    NodePK createNode(std::unordered_set<std::string> labels = {},
+                      std::unordered_map<std::string, Data> properties = {},
+                      std::string alias = "");
 
-	NodePK createNode(std::unordered_set<std::string> labels={},
-					std::unordered_map<std::string, Data> properties={}, std::string alias="");
-	
-	NodePK getNodePKByAlias(const std::string &alias) const;
-		
-	EdgePK createEdge(std::string type, NodePK from, NodePK to,
-					std::unordered_map<std::string, Data> properties={});
+    NodePK getNodePKByAlias(const std::string &alias) const;
 
-	EdgePK createEdgeByAlias(const std::string &type, const std::string &fromAlias, const std::string &toAlias,
-					std::unordered_map<std::string, Data> properties={});
+    EdgePK createEdge(std::string type, NodePK from, NodePK to,
+                      std::unordered_map<std::string, Data> properties = {});
 
-	void loadFromFile(const std::string &filename);
-	void saveToFile(const std::string &filename) const;
-	void getGraphAsStream(std::ostream &os) const;
+    EdgePK createEdgeByAlias(const std::string &type, const std::string &fromAlias,
+                             const std::string &toAlias,
+                             std::unordered_map<std::string, Data> properties = {});
 
-	void parseCypherScript(const std::string &filename);
+    void loadFromFile(const std::string &filename);
+    void saveToFile(const std::string &filename) const;
+    void getGraphAsStream(std::ostream &os) const;
+
+    void parseCypherScript(const std::string &filename);
 };

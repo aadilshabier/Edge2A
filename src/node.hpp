@@ -7,11 +7,10 @@
 #include <unordered_set>
 #include <vector>
 
-class Node
-{
+class Node {
 public:
-	NodePK pk;
-	std::unordered_set<std::string> labels;
-	std::unordered_map<std::string, Data> properties;
-	std::vector<EdgePK> edges;
+    NodePK pk;
+    std::unordered_set<std::string> labels;
+    std::unordered_map<std::string, Data> properties;
+    std::vector<EdgePK> edges;
 };
